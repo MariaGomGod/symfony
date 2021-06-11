@@ -40,8 +40,6 @@ class DefaultController extends AbstractController
 
         // symfony console es un comando equivalente a symfony console
 
-        $name = 'María';
-
         // Mostrar las rutas disonibles en mi navegador:
         // - symfony console debug:router
         // - symfony console debug:router default_index
@@ -49,7 +47,7 @@ class DefaultController extends AbstractController
         // - symfony console router:match /  
 
         return $this->render('default/index.html.twig', [
-            'nombre' => $name
+            'people' => self::PEOPLE
         ]);
     }
 
@@ -68,5 +66,6 @@ class DefaultController extends AbstractController
 
     public function indexJson(): JsonResponse {
         return new JsonResponse(self::PEOPLE);
+        // es igual que: return $this->json(self::PEOPLE);
     }
 }
