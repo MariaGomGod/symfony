@@ -90,7 +90,7 @@ class DefaultController extends AbstractController
 
     public function show(int $id): Response {
         //var_dump($id); die();
-        return $this->render('default/index.html.twig', [
+        return $this->render('default/show.html.twig', [
             'id' => $id,
             'person' => self::PEOPLE[$id]
         ]);
@@ -108,6 +108,6 @@ class DefaultController extends AbstractController
         //return $this->redirectToRoute('default_show', ['id' => 1]);
 
         // Devolver directamente un objeto RedirectResponse
-        //return new RedirectResponse('/', Response::HTTP_TEMPORARY_REDIRECT);
+        return new RedirectResponse('/', Response::HTTP_TEMPORARY_REDIRECT);
     }
 }
