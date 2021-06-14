@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -91,7 +92,22 @@ class DefaultController extends AbstractController
         //var_dump($id); die();
         return $this->render('default/index.html.twig', [
             'id' => $id,
-            'person' => [self::PEOPLE[$id]]
+            'person' => self::PEOPLE[$id]
         ]);
+    }
+
+    /**
+     * @Route("/redirect-to-home", name="default_redirect_to_home")
+     */
+
+    public function redirectToHome(): Response {
+        // Redirigir a la URL
+        // return $this->redirect('/');
+
+        // Redirigir a una ruta utilizando su nombre
+        //return $this->redirectToRoute('default_show', ['id' => 1]);
+
+        // Devolver directamente un objeto RedirectResponse
+        //return new RedirectResponse('/', Response::HTTP_TEMPORARY_REDIRECT);
     }
 }
