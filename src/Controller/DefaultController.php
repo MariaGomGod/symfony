@@ -42,11 +42,19 @@ class DefaultController extends AbstractController
 
         // symfony console es un comando equivalente a symfony console
 
-        // Mostrar las rutas disonibles en mi navegador:
+        // Mostrar las rutas disponibles en mi navegador:
         // - symfony console debug:router
         // - symfony console debug:router default_index
         // - symfony console router --help
-        // - symfony console router:match /  
+        // - symfony console router:match / 
+        
+        // Acceso y propiedades del objeto Request.
+        // https://symfony.com/doc/current/controller.html#the-request-and-response-object
+        // echo '<pre>query: '; var_dump($request->query); echo '</pre>'; // Equivalente a $_GET, pero supervitaminado.
+        // echo '<pre>post: '; var_dump($request->request); echo '</pre>'; // Equivalente a $_POST, pero supervitaminado.
+        // echo '<pre>server: '; var_dump($request->server); echo '</pre>'; // Equivalente a $_SERVER, pero supervitaminado.
+        // echo '<pre>files: '; var_dump($request->files); echo '</pre>'; // Equivalente a $_FILES, pero supervitaminado.
+        // echo '<pre>idioma prefererido: '; var_dump($request->getPreferredLanguage()); echo '</pre>';
 
         return $this->render('default/index.html.twig', [
             'people' => self::PEOPLE
@@ -74,9 +82,9 @@ class DefaultController extends AbstractController
     * coincidente con la ruta indicada y mostrará la información asociada.   
     */
 
-    public function indexJson(): JsonResponse {
-        return new JsonResponse(self::PEOPLE);
-        // es igual que: return $this->json(self::PEOPLE);
+    public function indexJson(Request $request): JsonResponse {
+        $data = $request->query->has('id') ? self::PEOPLE[$request->query->get('id')] : self::PEOPLE;
+        return  $this->json($data);
     }
 
     /**
@@ -110,7 +118,4 @@ class DefaultController extends AbstractController
         // Devolver directamente un objeto RedirectResponse
         return new RedirectResponse('/', Response::HTTP_TEMPORARY_REDIRECT);
     }
-    
-    // ejercicio: crear el recurso para obtener una representación de "un" empleado
-    // en formato JSON.
 }
