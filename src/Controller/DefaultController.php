@@ -25,8 +25,15 @@ class DefaultController extends AbstractController
      * El segundo parámetro de Route es el nombre que queremos dar a la ruta.
     */
 
-    public function index(EmployeeRepository $employeeRepository): Response
-    {   
+    public function index(Request $request, EmployeeRepository $employeeRepository): Response
+    {
+        if ($request->query->has('term'))  {
+            $people = $employeeRepository->findByTerm($request->query->get('term'));
+
+            return $this->render('default/index.html.twig', [
+                'people' => $people
+            ]);
+        }
         // Una acción siempre debe devolver una respuesta
         // Por defecto deberá ser un objeto de la clase,
         // Symfony\Component\HttpFoundation\Response
@@ -54,8 +61,15 @@ class DefaultController extends AbstractController
         // Método 1: accediendo al repositorio a través de AbstractController.
         //$people = $this->getDoctrine()->getRepository(Employee::class)->findAll(); // ->app\Entity\Employee
 
-        // Método 2: creando un parámetro indicando el tipo (type hint).
-        $people = $employeeRepository->findAll();
+        $order = [];
+
+        if($request->query->has('orderBy')) {
+            $order[$request->query->get('orderBy')] = $request->query->get('orderDir', 'ASC');
+            // $order = ['email' => 'DESC'];
+        }
+
+        // Metodo 2: creando un parámetro indicando el tipo (type hint).
+        $people = $employeeRepository->findBy([], $order); // Employee::class = App\Entity\Employee
 
         return $this->render('default/index.html.twig', [
             'people' => $people
