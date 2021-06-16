@@ -19,7 +19,7 @@ class EmployeeRepository extends ServiceEntityRepository
         parent::__construct($registry, Employee::class);
     }
 
-    public function findByTerm(string $term) 
+    public function findByTermStrict(string $term) 
     {
         $queryBuilder = $this->createQueryBuilder('e'); // buena recomendación poner de letra de alias aquella por la que comienza el del nombre de la entidad (Employee), por tanto ponemos dentro del paréntesis 'e'
         // SELECT * FROM employee e
@@ -40,6 +40,24 @@ class EmployeeRepository extends ServiceEntityRepository
 
         $query = $queryBuilder->getQuery();
         return $query->getResult();
+    }
+
+    public function findByTerm(string $term)
+    {
+        $queryBuilder = $this->createQueryBuilder('e');
+
+        $queryBuilder->where(
+            $queryBuilder->expr()->orX(
+                $queryBuilder->expr()->like('e.name', ':term'),
+                $queryBuilder->expr()->like('e.email', ':term'),
+                $queryBuilder->expr()->like('e.city', ':term')
+            )
+        );
+
+        $queryBuilder->setParameter('term', '%'.$term.'%');
+        $queryBuilder->orderBy('e.id', 'ASC');
+
+        return $queryBuilder->getQuery()->getResult();
     }
 
     // /**
