@@ -15,13 +15,6 @@ use Symfony\Component\Routing\Annotation\Route;
 // disposición nuestra multitud de características.
 class DefaultController extends AbstractController
 {
-    const PEOPLE = [
-        ['name' => 'Carlos', 'email' => 'carlos@correo.com', 'age' => 30, 'city' => 'Benalmádena'],
-        ['name' => 'Carmen', 'email' => 'carmen@correo.com', 'age' => 25, 'city' => 'Fuengirola'],
-        ['name' => 'Carmelo', 'email' => 'carmelo@correo.com', 'age' => 35, 'city' => 'Torremolinos'],
-        ['name' => 'Carolina', 'email' => 'carolina@correo.com', 'age' => 38, 'city' => 'Málaga'],        
-    ];
-
     /**
      * @Route("/default", name="default_index")
      *
@@ -56,8 +49,9 @@ class DefaultController extends AbstractController
         // echo '<pre>files: '; var_dump($request->files); echo '</pre>'; // Equivalente a $_FILES, pero supervitaminado.
         // echo '<pre>idioma prefererido: '; var_dump($request->getPreferredLanguage()); echo '</pre>';
 
+        $people = $this->getDoctrine()->getRepository(Employee::class)->findAll(); // ->app\Entity\Employee
         return $this->render('default/index.html.twig', [
-            'people' => self::PEOPLE
+            'people' => [$people]
         ]);
     }
 
@@ -83,7 +77,7 @@ class DefaultController extends AbstractController
     */
 
     public function indexJson(Request $request): JsonResponse {
-        $data = $request->query->has('id') ? self::PEOPLE[$request->query->get('id')] : self::PEOPLE;
+        $data = $request->query->has('id') ? [] : [];
         return  $this->json($data);
     }
 
@@ -100,7 +94,7 @@ class DefaultController extends AbstractController
         //var_dump($id); die();
         return $this->render('default/show.html.twig', [
             'id' => $id,
-            'person' => self::PEOPLE[$id]
+            'person' => []
         ]);
     }
 
