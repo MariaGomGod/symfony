@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Employee;
 use Symfony\Component\HttpFoundation\Request;
 use App\Repository\EmployeeRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -63,14 +64,24 @@ class ApiEmployeesController extends AbstractController
     *  )
     */
 
-    public function add(): Response {
+    public function add(
+        Request $request,
+        EntityManagerInterface $entityManager
+        ): Response {
+
+        $data = $request->request;
+
         $employee = new Employee();
 
-        $employee->setName('nombre');
-        $employee->setEmail('hola@hola.com');
-        $employee->setAge(50);
-        $employee->setCity('Córdoba');
-        $employee->setPhone('605201421');
+        $employee->setName($data->get('name'));
+        $employee->setEmail($data->get('email'));
+        $employee->setAge($data->get('age'));
+        $employee->setCity($data->get('city'));
+        $employee->setPhone($data->get('phone'));
+
+        $entityManager->persist($employee);
+
+        $entityManager->flush();
 
         dump($employee);
 
